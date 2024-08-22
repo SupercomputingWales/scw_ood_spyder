@@ -1,8 +1,5 @@
 # Batch Connect - Example Spyder App
 
-![GitHub Release](https://img.shields.io/github/release/osc/bc_example_jupyter.svg)
-![GitHub License](https://img.shields.io/github/license/osc/bc_example_jupyter.svg)
-
 An example Batch Connect app that launches Spyder within a batch job.
 
 ## Prerequisites
