@@ -1,0 +1,9 @@
+---
+name: Spyder
+category: Interactive Apps
+subcategory: Servers
+role: batch_connect
+description: |
+  This app will launch Spyder Python3 IDE on a cluster node. You
+  will have full access to the resources these nodes provide. This is analogous
+  to an interactive batch job.

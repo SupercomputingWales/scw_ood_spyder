@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Benchmark info
+echo "TIMING - Starting main script at: $(date)"
+
+# Change working directory to user's home directory
+cd "${HOME}"
+
+# Reset module environment (may require login shell for some HPC clusters)
+module purge
+
+# Ensure that the user's configured login shell is used
+export SHELL="$(getent passwd $USER | cut -d: -f7)"
+
+# Start up desktop
+# Launch Mate Window Manager and Panel
+marco --no-composite --no-force-fullscreen --sm-disable &
+# Load the require modules
+module load miniforge3/24.3.0-0
+
+<%- unless context.ha_modules.blank? -%>
+# Load additional modules
+module load <%= context.ha_modules %>
+<%- end -%>
+
+# List loaded modules
+module list
+
+# Benchmark info
+echo "TIMING - Starting Spyder at: $(date)"
+
+# Launch Spyder
+eval "$(/apps/languages/miniforge3/24.3.0-0/bin/conda shell.bash hook)"
+source activate ondemand_spyder
+set -x
+spyder <%= context.an_extra_args %>

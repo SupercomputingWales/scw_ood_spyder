@@ -1,0 +1,57 @@
+#
+# Configure the content of the job script for the batch job here
+# @see http://www.rubydoc.info/gems/ood_core/OodCore/BatchConnect/Template
+#
+#
+# Job submission configuration file
+#
+<%
+  # your image location will differa
+  image="/apps/ondemand/containers/mate_v11a.sif"
+%>
+---
+script:
+  native: [
+    "-n", "<%= ha_tasks.blank? ? 1 : ha_tasks.to_i %>",
+    "--ntasks-per-node=<%= [ha_tasks.blank? ? 1 : ha_tasks.to_i, 40 ].min %>", 
+    "-c", "<%= ha_cpus.blank?  ? 1 : ha_cpus.to_i %>",
+     <%- if not ha_gpus.blank? -%>
+        "--gres=gpu:<%= ha_gpus.to_i %>",
+     <%- end -%>
+     <%- if not ha_mem.blank? -%>
+         "--mem=<%= ha_mem.to_i %>G",
+     <%- end -%>
+     <%- if not ha_qos.blank? -%>
+         "--qos=<%= ha_qos.strip %>"
+     <%- end -%>
+
+     ]
+  queue_name: <%= ha_partition.blank? ? "dev" : ha_partition.strip %>
+  reservation_id: <%= ha_reservation.blank? ? "" : ha_reservation.strip %>
+  <% unless email.blank? %>
+  email: <%= email %>
+  <% end %> 
+batch_connect:
+  template: "vnc"
+  before_script: |
+    # Export the module function if it exists
+    [[ $(type -t module) == "function"  ]] && export -f module
+
+  websockify_cmd: '/usr/bin/websockify'
+  script_wrapper: |
+    cat << "CTRSCRIPT" > container.sh
+    export PATH="$PATH:/opt/TurboVNC/bin"
+    [ -e /usr/local/cuda-11.2 ] && export CUDA_HOME=/usr/local/cuda-11.2
+    %s
+    CTRSCRIPT
+
+    # your bindpath will differ
+    mkdir -p /tmp/$USER
+    export SINGULARITY_BINDPATH="/opt/slurm/22.05.8-1,/etc/ssh,/home,/nfshome,/scratch,/var,/run,/tmp/$USER:/run/user"
+    if [ -e /usr/local/cuda ]
+    then
+      export SINGULARITY_BINDPATH="$SINGULARITY_BINDPATH,/usr/local/cuda"
+    fi
+    module load singularity
+    echo "INFO: About to run singularity"
+    singularity exec --nv <%= image %> /bin/bash container.sh

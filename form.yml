@@ -1,0 +1,84 @@
+---
+form:
+  - an_extra_args
+  - cluster
+  - ha_modules
+  - ha_partition
+  - ha_tasks
+  - ha_cpus
+  - ha_gpus
+  - ha_mem
+  - ha_reservation
+  - ha_qos
+  - bc_account
+  - bc_num_hours
+  - email
+  - bc_email_on_started
+
+attributes:
+  ha_modules:
+    label: "Additional modules (optional)"
+    help: "<small>Space separated list of additional modules to load</small>"
+
+  an_extra_args:
+    label: "Additional Spyder arguments (optional)"
+  
+  cluster:
+    widget: "select"
+    options:
+      - ["Standard", "hawk"]
+      - ["AMD cluster", "hawkloginamd"]
+
+  ha_partition:
+    label: "Partition"
+    value: "dev"
+    required: true
+    help: "<small>Partition to submit the job to</small>"
+    widget: text_field
+
+  ha_tasks:
+    label: "Tasks"
+    widget: "number_field"
+    help: "<small>Number of tasks (e.g. MPI tasks)</small>"
+    required: true
+    min: 1
+    value: 1
+
+  ha_cpus:
+    label: "#CPUs per task"
+    widget: "number_field"
+    help: "<small>Number of CPU cores per task to allocate</small>"
+    required: true
+    min: 1
+    value: "1"
+
+  ha_gpus:
+    label: "#GPUs (optional)"
+    widget: "number_field"
+    help: "<small>Number of GPUs to allocate (don't forget to select a partition with GPUs)</small>"
+    min: 1
+    max: 2
+    value: ""
+
+  ha_mem:
+    label: "Memory (GB) (optional)"
+    widget: "number_field"
+    help: "<small>Amount of memory to allocate</small>"
+  
+  ha_reservation:
+    label: "Reservation (optional)"
+    help: "<small>For special occassions a reservation may be given</small>" 
+
+  ha_qos:
+    label: "QOS (optional)"
+    help: "<small>For special job limits a QOS may be given</small>" 
+ 
+  bc_account:
+    label: "Project code"
+ 
+  bc_num_hours:
+    label: "Runtime (in hours)"
+
+  email:
+    label: "Email address"
+    help: "<small>Address used to send start of job notification</small>"
